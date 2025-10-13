@@ -50,4 +50,42 @@ public class GameAPI : MonoBehaviour
             yield return request.SendWebRequest();
         }
     }
+    void Start()
+    {
+        LoadTokenFromPrefs();
+    }
+
+    // PlayerPrefs에서 토큰 정보 로드
+    private void LoadTokenFromPrefs()
+    {
+        accessToken = PlayerPrefs.GetString(ACCESS_TOKEN_PREFS_KEY, "");
+        refreshToken = PlayerPrefs.GetString(REFRESH_TOKEN_PREFS_KEY, "");
+        long expiryTicks = Convert.ToInt64(PlayerPrefs.GetString(TOKEN_EXPIRY_PREFS_KEY, "0"));
+        tokenExpiryTime = new DateTime(expiryTicks);
+    }
+
+    // PlayerPrefs에 토큰 정보 저장
+    private void SaveTokenToPrefs(string accessToken, string refreshToken, DateTime expiryTime)
+    {
+        PlayerPrefs.SetString(ACCESS_TOKEN_PREFS_KEY, accessToken);
+        PlayerPrefs.SetString(REFRESH_TOKEN_PREFS_KEY, refreshToken);
+        PlayerPrefs.SetString(TOKEN_EXPIRY_PREFS_KEY, expiryTime.Ticks.ToString());
+
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+        this.tokenExpiryTime = expiryTime;
+    }
+}
+[System.Serializable]
+public class LoginResponse
+{
+    public string accessToken;
+    public string refreshToken;
+}
+
+// 토큰 갱신 응답 데이터 구조
+[System.Serializable]
+public class RefreshTokenResponse
+{
+    public string accessToken;
 }
