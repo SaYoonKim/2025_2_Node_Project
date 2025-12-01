@@ -19,7 +19,8 @@ SetupServerEvent()
 
         this.players.set(playerId, {
             socket: socket,
-            position: { x:0, y:0, z:0 }
+            position: { x:0, y:0, z:0 },
+            rotation: { x:0, y:0, z:0 }
         });
         console.log(`클라이언트 접속! ID : ${playerId}, 현재 접속자 : ${this.clients.size}`);
 
@@ -39,7 +40,9 @@ SetupServerEvent()
             try
             {
                 const data = JSON.parse(message);
-                console.log('수신된 메시지 : ', data);
+                if(data.type === 'chat')
+                {
+                    console.log('수신된 메시지 : ', data);
 
                 // 채팅 메시지 브로드캐스트 (보낸 사람 정보 포함)
                 this.broadcast({
@@ -47,6 +50,12 @@ SetupServerEvent()
                     playerId: playerId,
                     message: data.message
                 });
+                }
+                else if(DOMMatrixReadOnly.type === 'positionUpdate')
+                {
+                    
+                }
+                
             }
             catch (error)
             {
